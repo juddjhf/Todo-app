@@ -1,5 +1,8 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,7 +15,7 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Input Handle
+  // ================= INPUT HANDLE =================
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -22,7 +25,7 @@ const Login = () => {
     }));
   };
 
-  // Login
+  // ================= LOGIN =================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -30,17 +33,14 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/user/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`${API_URL}/api/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      });
 
       const data = await response.json();
 
@@ -51,21 +51,15 @@ const Login = () => {
 
       console.log("Login Response:", data);
 
-      // Save Access Token
-      localStorage.setItem(
-        "accesstoken",
-        data.accesstoken
-      );
+      // ================= SAVE ACCESS TOKEN =================
+      localStorage.setItem("accesstoken", data.accesstoken);
 
-      // Save User Data
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.data)
-      );
+      // ================= SAVE USER DATA =================
+      localStorage.setItem("user", JSON.stringify(data.data));
 
-      setMessage(data.message);
+      setMessage(data.message || "Login successful");
 
-      // Role ke according redirect
+      // ================= ROLE BASED REDIRECT =================
       setTimeout(() => {
         if (data.data.role === "admin") {
           navigate("/admin");
@@ -85,10 +79,10 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-100 px-4">
 
-      {/* Login Card */}
+      {/* LOGIN CARD */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 
-        {/* Heading */}
+        {/* HEADING */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">
             Welcome Back
@@ -99,9 +93,10 @@ const Login = () => {
           </p>
         </div>
 
+        {/* LOGIN FORM */}
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* Email */}
+          {/* EMAIL */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Email
@@ -132,7 +127,7 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
+          {/* PASSWORD */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Password
@@ -163,7 +158,7 @@ const Login = () => {
             />
           </div>
 
-          {/* Message */}
+          {/* MESSAGE */}
           {message && (
             <p
               className={`text-center text-sm font-medium ${
@@ -176,7 +171,7 @@ const Login = () => {
             </p>
           )}
 
-          {/* Login Button */}
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
             disabled={loading}
@@ -200,8 +195,9 @@ const Login = () => {
 
         </form>
 
-        {/* Register */}
+        {/* REGISTER */}
         <div className="text-center mt-7">
+
           <p className="text-gray-500 text-sm">
             Don't have an account?
           </p>
@@ -219,6 +215,7 @@ const Login = () => {
           >
             Create Account
           </Link>
+
         </div>
 
       </div>
@@ -227,4 +224,3 @@ const Login = () => {
 };
 
 export default Login;
-
