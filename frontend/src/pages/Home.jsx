@@ -1,6 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Home = () => {
   const navigate = useNavigate();
@@ -35,15 +36,12 @@ const Home = () => {
   // ================= GET TODOS =================
   const getTodos = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/todo",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/todo`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
@@ -53,7 +51,6 @@ const Home = () => {
       }
 
       setTodos(data.data || []);
-
     } catch (error) {
       console.error(error);
       setMessage("Todo server se connect nahi ho raha");
@@ -80,20 +77,17 @@ const Home = () => {
     setMessage("");
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/todo",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            task,
-            description,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/api/todo`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          task,
+          description,
+        }),
+      });
 
       const data = await response.json();
 
@@ -108,7 +102,6 @@ const Home = () => {
       setDescription("");
 
       setMessage("Todo created successfully");
-
     } catch (error) {
       console.error(error);
       setMessage("Something went wrong");
@@ -127,20 +120,17 @@ const Home = () => {
   // ================= UPDATE TODO =================
   const handleUpdateTodo = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/todo/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            task: editTask,
-            description: editDescription,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/api/todo/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          task: editTask,
+          description: editDescription,
+        }),
+      });
 
       const data = await response.json();
 
@@ -160,7 +150,6 @@ const Home = () => {
       setEditDescription("");
 
       setMessage("Todo updated successfully");
-
     } catch (error) {
       console.error(error);
       setMessage("Something went wrong");
@@ -170,15 +159,12 @@ const Home = () => {
   // ================= DELETE TODO =================
   const handleDeleteTodo = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/todo/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/todo/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
@@ -192,7 +178,6 @@ const Home = () => {
       );
 
       setMessage("Todo deleted successfully");
-
     } catch (error) {
       console.error(error);
       setMessage("Something went wrong");
@@ -305,6 +290,7 @@ const Home = () => {
         <div>
 
           <div className="flex items-center justify-between mb-5">
+
             <h2 className="text-2xl font-bold text-gray-800">
               My Todos
             </h2>
@@ -312,15 +298,21 @@ const Home = () => {
             <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-semibold">
               {todos.length} Todos
             </span>
+
           </div>
 
           {todos.length === 0 ? (
+
             <div className="bg-white rounded-xl shadow-sm p-10 text-center">
+
               <p className="text-gray-500">
                 No todos found. Create your first todo!
               </p>
+
             </div>
+
           ) : (
+
             <div className="grid md:grid-cols-2 gap-5">
 
               {todos.map((todo) => (
@@ -333,6 +325,7 @@ const Home = () => {
                   {editId === todo._id ? (
 
                     /* ================= EDIT MODE ================= */
+
                     <div className="space-y-4">
 
                       <input
@@ -378,6 +371,7 @@ const Home = () => {
                   ) : (
 
                     /* ================= VIEW MODE ================= */
+
                     <>
                       <h3 className="text-xl font-bold text-gray-800">
                         {todo.task}
@@ -425,4 +419,3 @@ const Home = () => {
 };
 
 export default Home;
-
